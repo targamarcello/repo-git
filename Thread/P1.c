@@ -40,7 +40,7 @@ int main() {
     int step = DIM / THREADS;
     for (int i = 0; i < THREADS; i++) {
         thread_data[i].inizio = i * step;
-        thread_data[i].fine = (i == THREADS - 1) ? DIM : (i + 1) * step;
+        thread_data[i].fine = (i == THREADS - 1) ? DIM : (i + 1) * step;//assegno DIM se è l'ultimo thread, sennò (i+1)
         thread_data[i].nRicercare = target;
         thread_data[i].trovato = 0;
         pthread_create(&threads[i], NULL, search, (void *)&thread_data[i]);
