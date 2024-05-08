@@ -5,7 +5,7 @@
 
 #define BUFFER_DIM 1024
 
-/*void *LeggiFile(void *arg){
+void *LeggiFile(void *arg){
     int *fd = (int *)arg;
     FILE *origine = fopen("Lettura.txt", "r");
     if (origine == NULL) {
@@ -37,8 +37,8 @@ void *ScriviFile(void *arg){
     fclose(destinazione);
     close(*fd);
     pthread_exit(NULL);
-}*/
-/*int main(){
+}
+int main(){
     char nomeOrigine[50];
     char nomeDestinazione[50];
     printf("Inserisci nome file di origine: \n");
@@ -59,64 +59,5 @@ void *ScriviFile(void *arg){
     pthread_join(scrittura,NULL);
     fclose(org);
     fclose(dest);
-    printf("PROGRAMMA FINITO\n");
-}*/
-void *LeggiFile(void *arg){
-    int *fd = (int *)arg;
-    FILE *origine = fopen("Lettura.txt", "r");
-    if (origine == NULL) {
-        perror("Errore apertura file di origine");
-        pthread_exit(NULL);
-    }
-
-    char buffer[BUFFER_DIM];
-    int lettura;
-    while ((lettura = fread(buffer, 1, BUFFER_DIM, origine)) > 0)
-    {
-        write(*fd, buffer, lettura);
-    }
-    fclose(origine);
-    close(*fd);
-    pthread_exit(NULL);
-}
-
-void *ScriviFile(void *arg){
-    int *fd = (int *)arg;
-    FILE *destinazione = fopen("Scrittura.txt", "w");
-    if (destinazione == NULL) {
-        perror("Errore apertura file di destinazione");
-        pthread_exit(NULL);
-    }
-
-    char buffer[BUFFER_DIM];
-    size_t scrittura;
-    while ((scrittura = read(*fd, buffer, BUFFER_DIM)) > 0) {
-        fwrite(buffer, 1, scrittura, destinazione);
-    }
-    fclose(destinazione);
-    close(*fd);
-    pthread_exit(NULL);
-}
-
-int main(){
-    char nomeOrigine[50];
-    char nomeDestinazione[50];
-    printf("Inserisci nome file di origine: \n");
-    scanf("%s",nomeOrigine);
-    printf("Inserisci nome file di destinazione: \n");
-    scanf("%s",nomeDestinazione);
-
-    int fd[2];
-    if(pipe(fd)==-1){
-        perror("Errore creazione pipe");
-        exit(-1);
-    }
-
-    pthread_t lettura, scrittura;
-    pthread_create(&lettura,NULL, &LeggiFile,(void *)&fd[0]);
-    pthread_create(&scrittura,NULL, &ScriviFile,(void *)&fd[1]);
-    pthread_join(lettura,NULL);
-    pthread_join(scrittura,NULL);
-
     printf("PROGRAMMA FINITO\n");
 }
